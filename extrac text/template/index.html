@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Text Extraction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff7e5f, #feb47b); /* Gradient background */
+            margin: 0;
+            padding: 20px;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #000;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            background: #007bff;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            overflow-wrap: break-word; /* Ensure long text wraps correctly */
+        }
+
+        #textResult {
+            white-space: pre-wrap;
+            color: #000;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload an Image</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="imageFile" name="image" accept="image/*" required>
+        <button type="submit">Upload Image</button>
+    </form>
+    <div id="result">
+        <h2>Extracted Text:</h2>
+        <p id="textResult"></p>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').onsubmit = function(event) {
+            event.preventDefault();
+            var formData = new FormData();
+            formData.append('image', document.getElementById('imageFile').files[0]);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('textResult').innerText = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('textResult').innerText = data.text;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        };
+    </script>
+</body>
+</html>
